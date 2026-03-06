@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV Tailor</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ── App shell ── */
+    #app {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    #gear-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      line-height: 1;
+      color: #555;
+      transition: background 0.15s;
+    }
+    #gear-btn:hover { background: #e2e5ea; }
+
+    /* ── Settings panel ── */
+    #settings-panel {
+      display: none;
+      background: #fff;
+      border: 1px solid #dde1e7;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    #settings-panel.open { display: block; }
+    #settings-panel label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #444;
+    }
+    #settings-panel input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: monospace;
+    }
+    #settings-panel input:focus { outline: 2px solid #6366f1; border-color: transparent; }
+    #save-key-btn {
+      margin-top: 10px;
+      padding: 8px 18px;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #save-key-btn:hover { background: #4f52c7; }
+
+    /* ── Input card ── */
+    #input-card {
+      background: #fff;
+      border: 1px solid #dde1e7;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    #input-card label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #444;
+    }
+    #url-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+    #url-input:focus { outline: 2px solid #6366f1; border-color: transparent; }
+    #tailor-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 11px 32px;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #tailor-btn:hover:not(:disabled) { background: #4f52c7; }
+    #tailor-btn:disabled { background: #a5a6f6; cursor: not-allowed; }
+
+    /* ── Status ── */
+    #status {
+      min-height: 28px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    #status.error { color: #c0392b; font-weight: 600; }
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ccc;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── CV Preview ── */
+    #cv-section { display: none; }
+    #cv-section.visible { display: block; }
+
+    #cv-wrapper {
+      background: #fff;
+      border: 1px solid #dde1e7;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    /* A4 CV card */
+    #cv-card {
+      width: 794px;        /* ~210mm at 96dpi */
+      min-height: 1123px;  /* ~297mm at 96dpi */
+      margin: 0 auto;
+      background: #fff;
+      padding: 56px 64px;
+      font-family: 'Georgia', serif;
+      font-size: 11pt;
+      line-height: 1.55;
+      color: #1a1a1a;
+    }
+
+    /* Name / title / contact */
+    #cv-name {
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      outline: none;
+    }
+    #cv-title {
+      font-size: 13pt;
+      color: #444;
+      margin-top: 2px;
+      outline: none;
+    }
+    #cv-contact {
+      font-size: 9.5pt;
+      color: #666;
+      margin-top: 4px;
+      margin-bottom: 28px;
+      outline: none;
+    }
+
+    /* Sections */
+    .cv-section { margin-bottom: 22px; }
+    .cv-section-heading {
+      font-size: 10pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1.5px solid #1a1a1a;
+      padding-bottom: 3px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    /* Experience roles */
+    .cv-role { margin-bottom: 14px; }
+    .cv-role-title {
+      font-weight: 700;
+      font-size: 10.5pt;
+      outline: none;
+    }
+    .cv-role-meta {
+      font-size: 9pt;
+      color: #555;
+      margin-bottom: 4px;
+      outline: none;
+    }
+    .cv-bullets {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .cv-bullets li {
+      margin-bottom: 3px;
+      outline: none;
+    }
+
+    /* Profile paragraph */
+    .cv-profile-text { outline: none; }
+
+    /* Education */
+    .cv-edu-title {
+      font-weight: 700;
+      font-size: 10.5pt;
+      outline: none;
+    }
+    .cv-edu-meta {
+      font-size: 9pt;
+      color: #555;
+      margin-bottom: 4px;
+      outline: none;
+    }
+
+    /* Download button */
+    #download-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 30px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #download-btn:hover { background: #15803d; }
+
+    /* ── Print styles ── */
+    @media print {
+      body { background: #fff; }
+      #app > *:not(#cv-section) { display: none !important; }
+      #cv-section { display: block !important; }
+      #cv-wrapper { border: none; padding: 0; margin: 0; overflow: visible; }
+      #cv-card { width: 100%; min-height: unset; padding: 0; }
+      #download-btn { display: none !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <header>
+    <h1>CV Tailor</h1>
+    <button id="gear-btn" title="Settings">&#9881;</button>
+  </header>
+
+  <!-- Settings -->
+  <div id="settings-panel">
+    <label for="api-key-input">Anthropic API Key</label>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
+    <button id="save-key-btn">Save</button>
+  </div>
+
+  <!-- URL input -->
+  <div id="input-card">
+    <label for="url-input">Job ad URL</label>
+    <input type="url" id="url-input" placeholder="https://example.com/jobs/lead-product-manager" />
+    <button id="tailor-btn">Tailor my CV &#9654;</button>
+  </div>
+
+  <!-- Status -->
+  <div id="status"></div>
+
+  <!-- CV preview + download -->
+  <div id="cv-section">
+    <div id="cv-wrapper">
+      <div id="cv-card">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+    <button id="download-btn">Download PDF</button>
+  </div>
+
+</div>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────────
+const API_KEY_STORAGE = 'cvtailor_api_key';
+const CLAUDE_MODEL    = 'claude-sonnet-4-6';
+const JINA_PREFIX     = 'https://r.jina.ai/';
+
+// ── DOM refs ───────────────────────────────────────────────────────────────
+const gearBtn       = document.getElementById('gear-btn');
+const settingsPanel = document.getElementById('settings-panel');
+const apiKeyInput   = document.getElementById('api-key-input');
+const saveKeyBtn    = document.getElementById('save-key-btn');
+const urlInput      = document.getElementById('url-input');
+const tailorBtn     = document.getElementById('tailor-btn');
+const statusEl      = document.getElementById('status');
+const cvSection     = document.getElementById('cv-section');
+const cvCard        = document.getElementById('cv-card');
+const downloadBtn   = document.getElementById('download-btn');
+
+// ── Settings ───────────────────────────────────────────────────────────────
+gearBtn.addEventListener('click', () => settingsPanel.classList.toggle('open'));
+saveKeyBtn.addEventListener('click', () => {
+  const key = apiKeyInput.value.trim();
+  if (!key) return;
+  localStorage.setItem(API_KEY_STORAGE, key);
+  settingsPanel.classList.remove('open');
+  setStatus('API key saved.');
+});
+
+// Pre-fill if stored
+const storedKey = localStorage.getItem(API_KEY_STORAGE);
+if (storedKey) apiKeyInput.value = storedKey;
+
+// ── Utilities ──────────────────────────────────────────────────────────────
+function setStatus(msg, isError = false, loading = false) {
+  statusEl.className = isError ? 'error' : '';
+  statusEl.innerHTML = loading
+    ? `<span class="spinner"></span>${msg}`
+    : msg;
+}
+
+function getApiKey() {
+  return localStorage.getItem(API_KEY_STORAGE) || apiKeyInput.value.trim();
+}
+
+// ── Fetch base CV ──────────────────────────────────────────────────────────
+async function fetchBaseCV() {
+  const res = await fetch('./cv.md');
+  if (!res.ok) throw new Error('Could not load cv.md');
+  return res.text();
+}
+
+// ── Fetch job ad via Jina ──────────────────────────────────────────────────
+async function fetchJobAd(url) {
+  const jinaUrl = JINA_PREFIX + encodeURIComponent(url);
+  const res = await fetch(jinaUrl, { headers: { 'Accept': 'text/plain' } });
+  if (!res.ok) throw new Error(`Jina fetch failed (${res.status})`);
+  const text = await res.text();
+  if (!text || text.length < 100) throw new Error('Job ad text too short — check the URL.');
+  return text;
+}
+
+// ── Call Claude ────────────────────────────────────────────────────────────
+async function tailorCV(baseCV, jobText, apiKey) {
+  const systemPrompt = `You are an expert CV writer. The user will provide their base CV in Markdown and a job advertisement. Your task is to rewrite the CV so it is better tailored to the job — without inventing facts or changing the structure.
+
+Rules:
+- Keep ALL section headings exactly as-is (e.g. "## 01 Profile", "## 02 Experience", "## 03 Education")
+- Keep ALL role titles, company names, dates, and institutions exactly as-is
+- Only rewrite: the profile paragraph, bullet points under each role, and sub-bullets under education
+- You may reorder bullet points to lead with the most relevant ones
+- Adjust wording and emphasis to highlight skills and experience most relevant to the job
+- Keep it concise — the entire CV must fit on one A4 page
+- Return ONLY the modified Markdown — no explanation, no commentary, no code fences`;
+
+  const userMessage = `## Job Advertisement\n\n${jobText.slice(0, 6000)}\n\n---\n\n## My Base CV\n\n${baseCV}`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: 1500,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `Claude API error (${res.status})`);
+  }
+
+  const data = await res.json();
+  return data.content?.[0]?.text || '';
+}
+
+// ── Parse markdown → structured data ──────────────────────────────────────
+function parseCV(md) {
+  const lines = md.split('\n');
+
+  // Header block (lines before first ##)
+  let i = 0;
+  const name    = lines[i++]?.replace(/^#\s*/, '').trim() || '';
+  const titleL  = lines[i++]?.trim() || '';
+  const contact = lines[i++]?.trim() || '';
+
+  const sections = [];
+  let currentSection = null;
+  let currentRole = null;
+
+  for (; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (line.startsWith('## ')) {
+      currentRole = null;
+      currentSection = { heading: line.replace(/^##\s*/, '').trim(), roles: [], profileText: '' };
+      sections.push(currentSection);
+      continue;
+    }
+
+    if (line.startsWith('### ') && currentSection) {
+      currentRole = {
+        title: line.replace(/^###\s*/, '').trim(),
+        meta: '',
+        bullets: [],
+      };
+      currentSection.roles.push(currentRole);
+      continue;
+    }
+
+    if (!currentSection) continue;
+
+    if (currentRole) {
+      if (line.startsWith('- ')) {
+        currentRole.bullets.push(line.replace(/^-\s*/, '').trim());
+      } else if (line.trim() && !line.startsWith('#')) {
+        currentRole.meta = currentRole.meta
+          ? currentRole.meta + ' ' + line.trim()
+          : line.trim();
+      }
+    } else {
+      // Profile paragraph (plain text under ## heading, no sub-heading)
+      if (line.trim() && !line.startsWith('#')) {
+        currentSection.profileText = currentSection.profileText
+          ? currentSection.profileText + '\n' + line.trim()
+          : line.trim();
+      }
+    }
+  }
+
+  return { name, title: titleL, contact, sections };
+}
+
+// ── Render CV ──────────────────────────────────────────────────────────────
+function renderCV(parsed) {
+  const { name, title, contact, sections } = parsed;
+
+  let html = `
+    <div id="cv-name" contenteditable="true">${esc(name)}</div>
+    <div id="cv-title" contenteditable="true">${esc(title)}</div>
+    <div id="cv-contact" contenteditable="true">${esc(contact)}</div>
+  `;
+
+  for (const sec of sections) {
+    html += `<div class="cv-section">`;
+    html += `<div class="cv-section-heading" contenteditable="true">${esc(sec.heading)}</div>`;
+
+    if (sec.profileText) {
+      html += `<p class="cv-profile-text" contenteditable="true">${esc(sec.profileText)}</p>`;
+    }
+
+    for (const role of sec.roles) {
+      html += `<div class="cv-role">`;
+      html += `<div class="cv-role-title" contenteditable="true">${esc(role.title)}</div>`;
+      if (role.meta) {
+        html += `<div class="cv-role-meta" contenteditable="true">${esc(role.meta)}</div>`;
+      }
+      if (role.bullets.length) {
+        html += `<ul class="cv-bullets">`;
+        for (const b of role.bullets) {
+          html += `<li contenteditable="true">${esc(b)}</li>`;
+        }
+        html += `</ul>`;
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  cvCard.innerHTML = html;
+}
+
+function esc(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── Main flow ──────────────────────────────────────────────────────────────
+tailorBtn.addEventListener('click', async () => {
+  const url    = urlInput.value.trim();
+  const apiKey = getApiKey();
+
+  if (!url) {
+    setStatus('Please enter a job ad URL.', true);
+    return;
+  }
+  if (!apiKey) {
+    setStatus('Please add your Anthropic API key via the gear icon.', true);
+    settingsPanel.classList.add('open');
+    return;
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    setStatus('URL must start with http:// or https://', true);
+    return;
+  }
+
+  tailorBtn.disabled = true;
+  cvSection.classList.remove('visible');
+
+  try {
+    setStatus('Loading base CV…', false, true);
+    const baseCV = await fetchBaseCV();
+
+    setStatus('Fetching job ad…', false, true);
+    const jobText = await fetchJobAd(url);
+
+    setStatus('Tailoring your CV with Claude…', false, true);
+    const tailoredMd = await tailorCV(baseCV, jobText, apiKey);
+
+    if (!tailoredMd) throw new Error('Claude returned an empty response.');
+
+    const parsed = parseCV(tailoredMd);
+    renderCV(parsed);
+    cvSection.classList.add('visible');
+    setStatus('Done! Review, edit if needed, then download.');
+  } catch (err) {
+    setStatus(err.message, true);
+  } finally {
+    tailorBtn.disabled = false;
+  }
+});
+
+// ── Download / print ───────────────────────────────────────────────────────
+downloadBtn.addEventListener('click', () => window.print());
+
+// ── Init: render base CV on load ───────────────────────────────────────────
+(async () => {
+  try {
+    const baseCV = await fetchBaseCV();
+    const parsed = parseCV(baseCV);
+    renderCV(parsed);
+    cvSection.classList.add('visible');
+  } catch {
+    // silently ignore if served without a server (file:// protocol)
+  }
+})();
+</script>
+</body>
+</html>
