@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV Tailor</title>
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
@@ -16,7 +15,7 @@
 
     /* ── App shell ── */
     #app {
-      max-width: 900px;
+      max-width: 1340px;
       margin: 0 auto;
       padding: 24px 16px 60px;
     }
@@ -26,147 +25,147 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
-    header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
+    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
     #gear-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 8px;
-      font-size: 1.3rem;
-      line-height: 1;
-      color: #555;
-      transition: background 0.15s;
+      background: none; border: none; cursor: pointer;
+      padding: 6px; border-radius: 8px; font-size: 1.3rem; line-height: 1;
+      color: #555; transition: background 0.15s;
     }
     #gear-btn:hover { background: #e2e5ea; }
 
     /* ── Settings panel ── */
     #settings-panel {
       display: none;
-      background: #fff;
-      border: 1px solid #dde1e7;
+      background: #fff8e1;
+      border: 1px solid #f9c74f;
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
     }
     #settings-panel.open { display: block; }
-    #settings-panel label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #444;
-    }
+    #settings-panel p { color: #555; margin-bottom: 10px; }
+    #settings-panel label { font-weight: 600; display: block; margin-bottom: 6px; }
     #settings-panel input {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-family: monospace;
+      width: 100%; padding: 8px 12px; border: 1px solid #ccc;
+      border-radius: 8px; font-size: 0.9rem; font-family: monospace; margin-bottom: 8px;
     }
     #settings-panel input:focus { outline: 2px solid #6366f1; border-color: transparent; }
     #save-key-btn {
-      margin-top: 10px;
-      padding: 8px 18px;
-      background: #6366f1;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
+      padding: 7px 16px; background: #6366f1; color: #fff;
+      border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
     }
     #save-key-btn:hover { background: #4f52c7; }
 
     /* ── Input card ── */
     #input-card {
-      background: #fff;
-      border: 1px solid #dde1e7;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 20px;
+      background: #fff; border: 1px solid #dde1e7;
+      border-radius: 12px; padding: 20px; margin-bottom: 16px;
+      display: flex; gap: 10px; align-items: flex-end;
     }
-    #input-card label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #444;
-    }
+    #input-card label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: #444; }
+    .url-field { flex: 1; }
     #url-input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      margin-bottom: 14px;
+      width: 100%; padding: 10px 14px; border: 1px solid #ccc;
+      border-radius: 8px; font-size: 0.95rem;
     }
     #url-input:focus { outline: 2px solid #6366f1; border-color: transparent; }
     #tailor-btn {
-      display: block;
-      margin: 0 auto;
-      padding: 11px 32px;
-      background: #6366f1;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
+      padding: 10px 28px; background: #6366f1; color: #fff;
+      border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s; white-space: nowrap;
     }
     #tailor-btn:hover:not(:disabled) { background: #4f52c7; }
     #tailor-btn:disabled { background: #a5a6f6; cursor: not-allowed; }
 
     /* ── Status ── */
     #status {
-      min-height: 28px;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #555;
-      margin-bottom: 20px;
+      min-height: 24px; text-align: center; font-size: 0.88rem;
+      color: #555; margin-bottom: 16px;
     }
     #status.error { color: #c0392b; font-weight: 600; }
     .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #ccc;
-      border-top-color: #6366f1;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid #ccc; border-top-color: #6366f1; border-radius: 50%;
+      animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── CV Preview ── */
-    #cv-section { display: none; }
-    #cv-section.visible { display: block; }
+    /* ── Content area: split layout ── */
+    #content-area {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
 
+    /* ── Job description panel (left) ── */
+    #job-panel {
+      display: none;
+      flex: 1;
+      min-width: 0;
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #dde1e7;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    #job-panel.visible { display: block; }
+    .panel-header {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #555;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .panel-header .hint {
+      display: block;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #888;
+      margin-top: 3px;
+      font-size: 0.78rem;
+    }
+    #job-text {
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: #333;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    #job-text mark {
+      background: #fef08a;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    /* ── CV wrapper (right) ── */
     #cv-wrapper {
+      flex: 1;
+      min-width: 0;
       background: #fff;
       border: 1px solid #dde1e7;
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 16px;
       overflow-x: auto;
     }
 
-    /* A4 CV card */
+    /* ── A4 CV card ── */
     #cv-card {
-      width: 794px;        /* ~210mm at 96dpi */
-      min-height: 1123px;  /* ~297mm at 96dpi */
+      max-width: 794px;
+      min-height: 960px;
       margin: 0 auto;
       background: #fff;
-      padding: 56px 64px;
+      padding: 48px 56px;
       font-family: 'Georgia', serif;
       font-size: 11pt;
       line-height: 1.55;
@@ -174,101 +173,62 @@
     }
 
     /* Name / title / contact */
-    #cv-name {
-      font-size: 22pt;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      outline: none;
-    }
-    #cv-title {
-      font-size: 13pt;
-      color: #444;
-      margin-top: 2px;
-      outline: none;
-    }
-    #cv-contact {
-      font-size: 9.5pt;
-      color: #666;
-      margin-top: 4px;
-      margin-bottom: 28px;
-      outline: none;
-    }
+    #cv-name { font-size: 22pt; font-weight: 700; letter-spacing: -0.01em; outline: none; }
+    #cv-title { font-size: 13pt; color: #444; margin-top: 2px; outline: none; }
+    #cv-contact { font-size: 9.5pt; color: #666; margin-top: 4px; margin-bottom: 26px; outline: none; }
 
     /* Sections */
-    .cv-section { margin-bottom: 22px; }
+    .cv-section { margin-bottom: 20px; }
     .cv-section-heading {
-      font-size: 10pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border-bottom: 1.5px solid #1a1a1a;
-      padding-bottom: 3px;
-      margin-bottom: 12px;
-      outline: none;
+      font-size: 10pt; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; border-bottom: 1.5px solid #1a1a1a;
+      padding-bottom: 3px; margin-bottom: 10px; outline: none;
     }
 
-    /* Experience roles */
-    .cv-role { margin-bottom: 14px; }
-    .cv-role-title {
-      font-weight: 700;
-      font-size: 10.5pt;
-      outline: none;
-    }
-    .cv-role-meta {
-      font-size: 9pt;
-      color: #555;
-      margin-bottom: 4px;
-      outline: none;
-    }
-    .cv-bullets {
-      padding-left: 18px;
-      margin: 0;
-    }
-    .cv-bullets li {
-      margin-bottom: 3px;
-      outline: none;
-    }
+    /* Roles */
+    .cv-role { margin-bottom: 13px; }
+    .cv-role-title { font-weight: 700; font-size: 10.5pt; outline: none; }
+    .cv-role-meta { font-size: 9pt; color: #555; margin-bottom: 4px; outline: none; }
+    .cv-bullets { padding-left: 18px; margin: 0; }
+    .cv-bullets li { margin-bottom: 3px; outline: none; }
 
-    /* Profile paragraph */
+    /* Profile & Education */
     .cv-profile-text { outline: none; }
+    .cv-edu-title { font-weight: 700; font-size: 10.5pt; outline: none; }
+    .cv-edu-meta { font-size: 9pt; color: #555; margin-bottom: 4px; outline: none; }
 
-    /* Education */
-    .cv-edu-title {
-      font-weight: 700;
-      font-size: 10.5pt;
-      outline: none;
-    }
-    .cv-edu-meta {
-      font-size: 9pt;
-      color: #555;
-      margin-bottom: 4px;
-      outline: none;
+    /* ── Changed highlight ── */
+    .changed {
+      background: #fef08a;
+      border-radius: 2px;
     }
 
-    /* Download button */
+    /* ── Download button ── */
     #download-btn {
-      display: block;
+      display: none;
       margin: 0 auto;
-      padding: 10px 30px;
-      background: #16a34a;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
+      padding: 10px 28px;
+      background: #16a34a; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
       transition: background 0.15s;
     }
     #download-btn:hover { background: #15803d; }
 
-    /* ── Print styles ── */
+    /* ── Print ── */
     @media print {
       body { background: #fff; }
-      #app > *:not(#cv-section) { display: none !important; }
-      #cv-section { display: block !important; }
-      #cv-wrapper { border: none; padding: 0; margin: 0; overflow: visible; }
-      #cv-card { width: 100%; min-height: unset; padding: 0; }
-      #download-btn { display: none !important; }
+      header, #settings-panel, #input-card, #status, #job-panel, #download-btn { display: none !important; }
+      #content-area { display: block !important; }
+      #cv-wrapper { border: none; border-radius: 0; padding: 0; overflow: visible; }
+      #cv-card {
+        max-width: none;
+        width: 210mm;
+        min-height: 297mm;
+        padding: 18mm 20mm;
+        font-size: 10.5pt;
+      }
+      .changed { background: none !important; }
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
   </style>
@@ -276,46 +236,66 @@
 <body>
 <div id="app">
 
-  <!-- Header -->
   <header>
     <h1>CV Tailor</h1>
-    <button id="gear-btn" title="Settings">&#9881;</button>
+    <button id="gear-btn" title="API key settings (local dev only)">&#9881;</button>
   </header>
 
-  <!-- Settings -->
+  <!-- Settings: only needed for local testing without Vercel -->
   <div id="settings-panel">
+    <p>Only needed when running locally (not on Vercel). On Vercel, set <code>ANTHROPIC_API_KEY</code> in Project Settings → Environment Variables.</p>
     <label for="api-key-input">Anthropic API Key</label>
     <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
     <button id="save-key-btn">Save</button>
   </div>
 
-  <!-- URL input -->
+  <!-- Input -->
   <div id="input-card">
-    <label for="url-input">Job ad URL</label>
-    <input type="url" id="url-input" placeholder="https://example.com/jobs/lead-product-manager" />
+    <div class="url-field">
+      <label for="url-input">Job ad URL</label>
+      <input type="url" id="url-input" placeholder="https://example.com/jobs/lead-product-manager" />
+    </div>
     <button id="tailor-btn">Tailor my CV &#9654;</button>
   </div>
 
   <!-- Status -->
   <div id="status"></div>
 
-  <!-- CV preview + download -->
-  <div id="cv-section">
-    <div id="cv-wrapper">
-      <div id="cv-card">
-        <!-- Populated by JS -->
+  <!-- Split: job description (left) + CV (right) -->
+  <div id="content-area">
+    <div id="job-panel">
+      <div class="panel-header">
+        Job Description
+        <span class="hint">&#x1F7E1; highlighted phrases influenced the CV changes below</span>
       </div>
+      <div id="job-text"></div>
     </div>
-    <button id="download-btn">Download PDF</button>
+    <div id="cv-wrapper">
+      <div id="cv-card"></div>
+    </div>
   </div>
 
-</div>
+  <button id="download-btn">Download PDF</button>
 
+</div>
 <script>
 // ── Constants ──────────────────────────────────────────────────────────────
 const API_KEY_STORAGE = 'cvtailor_api_key';
-const CLAUDE_MODEL    = 'claude-sonnet-4-6';
 const JINA_PREFIX     = 'https://r.jina.ai/';
+const SYSTEM_PROMPT   = `You are an expert CV writer. The user provides their base CV in Markdown and a job advertisement. Rewrite the CV to better match the job. Follow these rules strictly:
+
+- Keep ALL section headings exactly as-is (e.g. "## 01 Profile", "## 02 Experience", "## 03 Education")
+- Keep ALL role titles, company names, dates, and institutions exactly as-is
+- Only rewrite: the profile paragraph, bullet points under each role, and sub-bullets under education
+- You may reorder bullet points to lead with the most relevant ones
+- Adjust wording and emphasis to highlight skills and experience most relevant to the job
+- Keep it concise — the entire CV must fit on one A4 page
+- Return the tailored CV markdown first
+
+Then on its own line output exactly:
+---HIGHLIGHTS---
+Then output a JSON array of 5-8 short exact phrases from the job ad (3–6 words each) that most directly influenced your rewrites. Example: ["AI-powered automation", "cross-functional leadership", "LLM extraction pipelines"]
+Output only the JSON array — no other text after the separator.`;
 
 // ── DOM refs ───────────────────────────────────────────────────────────────
 const gearBtn       = document.getElementById('gear-btn');
@@ -325,34 +305,38 @@ const saveKeyBtn    = document.getElementById('save-key-btn');
 const urlInput      = document.getElementById('url-input');
 const tailorBtn     = document.getElementById('tailor-btn');
 const statusEl      = document.getElementById('status');
-const cvSection     = document.getElementById('cv-section');
+const jobPanel      = document.getElementById('job-panel');
+const jobTextEl     = document.getElementById('job-text');
 const cvCard        = document.getElementById('cv-card');
 const downloadBtn   = document.getElementById('download-btn');
 
-// ── Settings ───────────────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────────────────
+let baseCV = '';
+
+// ── Settings (local dev fallback) ──────────────────────────────────────────
 gearBtn.addEventListener('click', () => settingsPanel.classList.toggle('open'));
 saveKeyBtn.addEventListener('click', () => {
   const key = apiKeyInput.value.trim();
   if (!key) return;
   localStorage.setItem(API_KEY_STORAGE, key);
   settingsPanel.classList.remove('open');
-  setStatus('API key saved.');
+  setStatus('API key saved (used for local testing only).');
 });
-
-// Pre-fill if stored
 const storedKey = localStorage.getItem(API_KEY_STORAGE);
 if (storedKey) apiKeyInput.value = storedKey;
 
 // ── Utilities ──────────────────────────────────────────────────────────────
 function setStatus(msg, isError = false, loading = false) {
   statusEl.className = isError ? 'error' : '';
-  statusEl.innerHTML = loading
-    ? `<span class="spinner"></span>${msg}`
-    : msg;
+  statusEl.innerHTML = loading ? `<span class="spinner"></span>${msg}` : msg;
 }
 
-function getApiKey() {
-  return localStorage.getItem(API_KEY_STORAGE) || apiKeyInput.value.trim();
+function esc(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 // ── Fetch base CV ──────────────────────────────────────────────────────────
@@ -365,27 +349,37 @@ async function fetchBaseCV() {
 // ── Fetch job ad via Jina ──────────────────────────────────────────────────
 async function fetchJobAd(url) {
   const jinaUrl = JINA_PREFIX + encodeURIComponent(url);
-  const res = await fetch(jinaUrl, { headers: { 'Accept': 'text/plain' } });
+  const res = await fetch(jinaUrl, { headers: { Accept: 'text/plain' } });
   if (!res.ok) throw new Error(`Jina fetch failed (${res.status})`);
   const text = await res.text();
   if (!text || text.length < 100) throw new Error('Job ad text too short — check the URL.');
   return text;
 }
 
-// ── Call Claude ────────────────────────────────────────────────────────────
-async function tailorCV(baseCV, jobText, apiKey) {
-  const systemPrompt = `You are an expert CV writer. The user will provide their base CV in Markdown and a job advertisement. Your task is to rewrite the CV so it is better tailored to the job — without inventing facts or changing the structure.
+// ── Call tailor API (Vercel function, with local-dev direct fallback) ──────
+async function callTailorAPI(jobText, baseCVText) {
+  // 1. Try Vercel serverless function
+  const serverRes = await fetch('/api/tailor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jobText, baseCV: baseCVText }),
+  });
 
-Rules:
-- Keep ALL section headings exactly as-is (e.g. "## 01 Profile", "## 02 Experience", "## 03 Education")
-- Keep ALL role titles, company names, dates, and institutions exactly as-is
-- Only rewrite: the profile paragraph, bullet points under each role, and sub-bullets under education
-- You may reorder bullet points to lead with the most relevant ones
-- Adjust wording and emphasis to highlight skills and experience most relevant to the job
-- Keep it concise — the entire CV must fit on one A4 page
-- Return ONLY the modified Markdown — no explanation, no commentary, no code fences`;
+  if (serverRes.status !== 404) {
+    if (!serverRes.ok) {
+      const err = await serverRes.json().catch(() => ({}));
+      throw new Error(err.error || `Server error (${serverRes.status})`);
+    }
+    const data = await serverRes.json();
+    return data.content?.[0]?.text || '';
+  }
 
-  const userMessage = `## Job Advertisement\n\n${jobText.slice(0, 6000)}\n\n---\n\n## My Base CV\n\n${baseCV}`;
+  // 2. Fallback: direct Claude call (local dev without serverless)
+  const apiKey = localStorage.getItem(API_KEY_STORAGE) || apiKeyInput.value.trim();
+  if (!apiKey) {
+    settingsPanel.classList.add('open');
+    throw new Error('No API key found. Enter one via the gear icon (local testing only).');
+  }
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -396,27 +390,54 @@ Rules:
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
-      max_tokens: 1500,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2048,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: `## Job Advertisement\n\n${jobText.slice(0, 6000)}\n\n---\n\n## My Base CV\n\n${baseCVText}` }],
     }),
   });
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err?.error?.message || `Claude API error (${res.status})`);
   }
-
   const data = await res.json();
   return data.content?.[0]?.text || '';
 }
 
-// ── Parse markdown → structured data ──────────────────────────────────────
+// ── Parse Claude response → CV markdown + highlight phrases ────────────────
+function parseClaudeResponse(raw) {
+  const SEP = '\n---HIGHLIGHTS---\n';
+  const idx = raw.indexOf(SEP);
+  if (idx === -1) return { cvMd: raw.trim(), highlights: [] };
+  const cvMd = raw.slice(0, idx).trim();
+  let highlights = [];
+  try {
+    highlights = JSON.parse(raw.slice(idx + SEP.length).trim());
+    if (!Array.isArray(highlights)) highlights = [];
+  } catch { /* malformed JSON — no highlights */ }
+  return { cvMd, highlights };
+}
+
+// ── Build set of changed lines (tailored vs original) ─────────────────────
+function buildChangedSet(originalMd, tailoredMd) {
+  const origSet = new Set(
+    originalMd.split('\n')
+      .map(l => l.replace(/^[-*+]\s+/, '').trim())
+      .filter(l => l && !l.startsWith('#'))
+  );
+  const changed = new Set();
+  for (const line of tailoredMd.split('\n')) {
+    const stripped = line.replace(/^[-*+]\s+/, '').trim();
+    if (stripped && !stripped.startsWith('#') && !origSet.has(stripped)) {
+      changed.add(stripped);
+    }
+  }
+  return changed;
+}
+
+// ── Parse markdown → structured CV ────────────────────────────────────────
 function parseCV(md) {
   const lines = md.split('\n');
-
-  // Header block (lines before first ##)
   let i = 0;
   const name    = lines[i++]?.replace(/^#\s*/, '').trim() || '';
   const titleL  = lines[i++]?.trim() || '';
@@ -428,26 +449,18 @@ function parseCV(md) {
 
   for (; i < lines.length; i++) {
     const line = lines[i];
-
     if (line.startsWith('## ')) {
       currentRole = null;
       currentSection = { heading: line.replace(/^##\s*/, '').trim(), roles: [], profileText: '' };
       sections.push(currentSection);
       continue;
     }
-
     if (line.startsWith('### ') && currentSection) {
-      currentRole = {
-        title: line.replace(/^###\s*/, '').trim(),
-        meta: '',
-        bullets: [],
-      };
+      currentRole = { title: line.replace(/^###\s*/, '').trim(), meta: '', bullets: [] };
       currentSection.roles.push(currentRole);
       continue;
     }
-
     if (!currentSection) continue;
-
     if (currentRole) {
       if (line.startsWith('- ')) {
         currentRole.bullets.push(line.replace(/^-\s*/, '').trim());
@@ -457,7 +470,6 @@ function parseCV(md) {
           : line.trim();
       }
     } else {
-      // Profile paragraph (plain text under ## heading, no sub-heading)
       if (line.trim() && !line.startsWith('#')) {
         currentSection.profileText = currentSection.profileText
           ? currentSection.profileText + '\n' + line.trim()
@@ -465,13 +477,20 @@ function parseCV(md) {
       }
     }
   }
-
   return { name, title: titleL, contact, sections };
 }
 
-// ── Render CV ──────────────────────────────────────────────────────────────
-function renderCV(parsed) {
+// ── Render CV (with optional change highlights) ────────────────────────────
+function renderCV(parsed, changedSet) {
   const { name, title, contact, sections } = parsed;
+
+  function changed(text) {
+    return changedSet && changedSet.has(text.trim()) ? ' class="changed"' : '';
+  }
+  function profileChanged(text) {
+    if (!changedSet) return '';
+    return text.split('\n').some(l => changedSet.has(l.trim())) ? ' class="changed"' : '';
+  }
 
   let html = `
     <div id="cv-name" contenteditable="true">${esc(name)}</div>
@@ -482,79 +501,72 @@ function renderCV(parsed) {
   for (const sec of sections) {
     html += `<div class="cv-section">`;
     html += `<div class="cv-section-heading" contenteditable="true">${esc(sec.heading)}</div>`;
-
     if (sec.profileText) {
-      html += `<p class="cv-profile-text" contenteditable="true">${esc(sec.profileText)}</p>`;
+      html += `<p class="cv-profile-text"${profileChanged(sec.profileText)} contenteditable="true">${esc(sec.profileText)}</p>`;
     }
-
     for (const role of sec.roles) {
       html += `<div class="cv-role">`;
       html += `<div class="cv-role-title" contenteditable="true">${esc(role.title)}</div>`;
       if (role.meta) {
-        html += `<div class="cv-role-meta" contenteditable="true">${esc(role.meta)}</div>`;
+        html += `<div class="cv-role-meta"${changed(role.meta)} contenteditable="true">${esc(role.meta)}</div>`;
       }
       if (role.bullets.length) {
         html += `<ul class="cv-bullets">`;
         for (const b of role.bullets) {
-          html += `<li contenteditable="true">${esc(b)}</li>`;
+          html += `<li${changed(b)} contenteditable="true">${esc(b)}</li>`;
         }
         html += `</ul>`;
       }
       html += `</div>`;
     }
-
     html += `</div>`;
   }
 
   cvCard.innerHTML = html;
 }
 
-function esc(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+// ── Display job description with highlights ────────────────────────────────
+function displayJobText(text, highlights) {
+  let html = esc(text);
+  for (const phrase of highlights) {
+    if (!phrase || phrase.length < 3) continue;
+    const escapedPhrase = esc(phrase).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    html = html.replace(new RegExp(escapedPhrase, 'gi'), '<mark>$&</mark>');
+  }
+  jobTextEl.innerHTML = html;
+  jobPanel.classList.add('visible');
 }
 
 // ── Main flow ──────────────────────────────────────────────────────────────
 tailorBtn.addEventListener('click', async () => {
-  const url    = urlInput.value.trim();
-  const apiKey = getApiKey();
-
-  if (!url) {
-    setStatus('Please enter a job ad URL.', true);
-    return;
-  }
-  if (!apiKey) {
-    setStatus('Please add your Anthropic API key via the gear icon.', true);
-    settingsPanel.classList.add('open');
-    return;
-  }
+  const url = urlInput.value.trim();
+  if (!url) { setStatus('Please enter a job ad URL.', true); return; }
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    setStatus('URL must start with http:// or https://', true);
-    return;
+    setStatus('URL must start with http:// or https://', true); return;
   }
 
   tailorBtn.disabled = true;
-  cvSection.classList.remove('visible');
+  jobPanel.classList.remove('visible');
 
   try {
-    setStatus('Loading base CV…', false, true);
-    const baseCV = await fetchBaseCV();
+    if (!baseCV) {
+      setStatus('Loading base CV…', false, true);
+      baseCV = await fetchBaseCV();
+    }
 
     setStatus('Fetching job ad…', false, true);
     const jobText = await fetchJobAd(url);
 
     setStatus('Tailoring your CV with Claude…', false, true);
-    const tailoredMd = await tailorCV(baseCV, jobText, apiKey);
+    const raw = await callTailorAPI(jobText, baseCV);
+    if (!raw) throw new Error('Claude returned an empty response.');
 
-    if (!tailoredMd) throw new Error('Claude returned an empty response.');
-
-    const parsed = parseCV(tailoredMd);
-    renderCV(parsed);
-    cvSection.classList.add('visible');
-    setStatus('Done! Review, edit if needed, then download.');
+    const { cvMd, highlights } = parseClaudeResponse(raw);
+    const changedSet = buildChangedSet(baseCV, cvMd);
+    renderCV(parseCV(cvMd), changedSet);
+    displayJobText(jobText, highlights);
+    downloadBtn.style.display = 'block';
+    setStatus(`Done — ${changedSet.size} line${changedSet.size !== 1 ? 's' : ''} changed (highlighted in yellow). Edit if needed, then download.`);
   } catch (err) {
     setStatus(err.message, true);
   } finally {
@@ -565,16 +577,13 @@ tailorBtn.addEventListener('click', async () => {
 // ── Download / print ───────────────────────────────────────────────────────
 downloadBtn.addEventListener('click', () => window.print());
 
-// ── Init: render base CV on load ───────────────────────────────────────────
+// ── Init: load and display base CV ────────────────────────────────────────
 (async () => {
   try {
-    const baseCV = await fetchBaseCV();
-    const parsed = parseCV(baseCV);
-    renderCV(parsed);
-    cvSection.classList.add('visible');
-  } catch {
-    // silently ignore if served without a server (file:// protocol)
-  }
+    baseCV = await fetchBaseCV();
+    renderCV(parseCV(baseCV), null);
+    downloadBtn.style.display = 'block';
+  } catch { /* file:// protocol — no server, ignore */ }
 })();
 </script>
 </body>
